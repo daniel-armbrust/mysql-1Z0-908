@@ -59,7 +59,7 @@ Written by Roland McGrath and Ulrich Drepper.
 mysql-8.0.36-linux-glibc2.28-x86_64.tar.xz
 ```
 
-### Instalando MySQL em Unix/Linux usando binários genéricos
+### Instalando o MySQL em Unix/Linux através de binários prontos para download
 
 A documentação oficial deste processo de instalação, pode ser encontrado no link: _[https://dev.mysql.com/doc/refman/8.0/en/binary-installation.html](https://dev.mysql.com/doc/refman/8.0/en/binary-installation.html)_
 
@@ -165,6 +165,18 @@ Warning: Since password will be sent to server in plain text, use ssl connection
 
 ```
 [root@orl8 mysql]# bin/mysql_tzinfo_to_sql /usr/share/zoneinfo | bin/mysql -u root mysql -p
+```
+
+#### 9. (Opcional) Verfificar a versão instalada
+
+```
+mysql> SELECT @@version;
++-----------+
+| @@version |
++-----------+
+| 8.0.36    |
++-----------+
+1 row in set (0.00 sec)
 ```
 
 ### Executando o MySQL em um contêiner Docker
