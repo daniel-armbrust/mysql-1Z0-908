@@ -1,6 +1,6 @@
 # Instalação e configuração do servidor
 
-## 1. Instalar e utilizar o servidor MySQL e programas cliente
+## 1.1 Instalar e utilizar o servidor MySQL e programas cliente
 
 ### Download 
 

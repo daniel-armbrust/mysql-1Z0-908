@@ -1,4 +1,4 @@
 # Instalação e configuração do servidor
 
-## 6. Configurar as variáveis do MySQL
+## 1.6 Configurar as variáveis do MySQL
 

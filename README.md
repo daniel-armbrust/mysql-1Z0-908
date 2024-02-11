@@ -10,7 +10,7 @@
 <br/>
 1.3 - [Iniciar e parar o serviço do MySQL](/start-and-stop-mysql.md)
 <br/>
-1.4 Atualizar MySQL
+1.4 - Atualizar MySQL
 <br/>
 1.5 - [Configurando o MySQL usando opções e arquivos de opções](/configure-mysql-by-using-options-and-option-files.md)
 <br/>

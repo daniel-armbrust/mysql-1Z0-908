@@ -1,6 +1,6 @@
 # Instalação e configuração do servidor
 
-## 5. Configurando o MySQL usando opções e arquivos de opções
+## 1.5 Configurando o MySQL usando opções e arquivos de opções
 
 Tanto o serviço do MySQL ([mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)) quanto seus clientes de linha de comando ([mysql](https://dev.mysql.com/doc/refman/8.0/en/mysql.html), [mysqladmin](https://dev.mysql.com/doc/refman/8.0/en/mysqladmin.html), etc), podem ser configurados/parametrizados basicamente de três maneiras diferentes:
 
