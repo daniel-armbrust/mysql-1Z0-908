@@ -2,19 +2,19 @@
 
 ## 5. Configurando o MySQL usando opções e arquivos de opções
 
-Tanto o serviço do MySQL ([mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)) quanto seus clientes de linha de comando ([mysql](https://dev.mysql.com/doc/refman/8.0/en/mysql.html), [mysqladmin](https://dev.mysql.com/doc/refman/8.0/en/mysqladmin.html), etc), podem ser configurados/parametrizados basicamente de três maneiras diferentes, nessa ordem:
+Tanto o serviço do MySQL ([mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)) quanto seus clientes de linha de comando ([mysql](https://dev.mysql.com/doc/refman/8.0/en/mysql.html), [mysqladmin](https://dev.mysql.com/doc/refman/8.0/en/mysqladmin.html), etc), podem ser configurados/parametrizados basicamente de três maneiras diferentes:
 
 1. Variáveis de ambiente
 2. Arquivo de configurações
 3. Linha de comando
 
-Lembrando que há uma ordem de precedência envolvida ao usar as opções de configuração. Ou seja, se uma determinada opção foi especificada em uma _variável de ambiente_ e também pela _linha de comando_, o valor da _linha de comando_ será usado pois é a última forma a ser inspecionada.
+Lembrando que há uma ordem de precedência envolvida ao usar as opções de configuração. Ou seja, se uma determinada opção foi especificada em uma _variável de ambiente_ e também pela _linha de comando_, o valor da _linha de comando_ será usada pois é a última forma a ser inspecionada (maior precedência).
 
->_**__NOTA:__** Há uma exceção nessa ordem de precedência. O servidor MySQL ([mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)), irá processar por último o arquivo **mysqld-auto.cnf**, se este existir dentro do [diretório de dados (datadir)](https://dev.mysql.com/doc/refman/8.0/en/data-directory.html). Ele tem precedência até mesmo sobre as opções de linha de comando._
+>_**__NOTA:__** Há uma exceção nessa ordem de precedência. O servidor MySQL ([mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)), irá processar por último o arquivo **mysqld-auto.cnf**, se este existir dentro do [diretório de dados (datadir)](https://dev.mysql.com/doc/refman/8.0/en/data-directory.html). Ele tem maior precedência até mesmo sobre as opções de linha de comando._
 
 ### Variáveis de ambiente
 
-Neste _[link](https://dev.mysql.com/doc/refman/8.0/en/environment-variables.html)_ é possível encontrar a lista das _[variáveis de ambiente](https://dev.mysql.com/doc/refman/8.0/en/environment-variables.html)_ disponíveis para utilização.
+Neste _[link](https://dev.mysql.com/doc/refman/8.0/en/environment-variables.html)_ é possível encontrar a lista das _[variáveis de ambiente](https://dev.mysql.com/doc/refman/8.0/en/environment-variables.html)_ disponíveis para utilização e que alteram as configurações do MySQL.
 
 ```
 [opc@orl8 mysql]$ export MYSQL_PS1='servidor-1 >> '
@@ -45,7 +45,7 @@ Por padrão, as opções de configuração são lidas através dos seguintes arq
 3. /usr/local/mysql/etc/my.cnf
 4. ~/.my.cnf
 
-Eu particularmente prefiro utilizar o diretório _"/etc/mysql"_ para incluír todos os arquivos de configuração do MySQL. Neste caso, o MySQL irá procurar pelo arquivo _"my.cnf"_ dentro do diretório _"/etc/mysql"_:
+Em uma instalação a partir dos binários prontos para download, eu particularmente prefiro utilizar o diretório _"/etc/mysql"_ para incluír todos os arquivos de configuração do MySQL. Neste caso, o MySQL irá procurar pelo arquivo _"my.cnf"_ dentro do diretório _"/etc/mysql"_:
 
 ```
 [root@orl8 mysql]# cat /etc/mysql/my.cnf
@@ -58,13 +58,13 @@ socket  = /tmp/mysql.sock
 default-character-set = latin1
 ```
 
-O arquivo de configurações é divido em diferentes _seções_ que também são chamados de _grupos_ ou _cabeçalhos_. Cada seção representa diretamente um programa do MySQL que possui um conjunto específico de configurações.
+O arquivo de configurações é divido em diferentes _seções_ que também são chamados de _grupos_ ou _cabeçalhos_. Cada seção representa diretamente um programa do MySQL no qual é possível definir opções e valores.
 
 ![alt_text](/imgs/mysql-configfile-1.png "Arquivo de configuração - 1")
 
-### \[mysqld\] e \[mysqld_safe\]
+#### \[mysqld\] e \[mysqld_safe\]
 
-Em _"[Iniciar e parar o serviço do MySQL](/start-and-stop-mysql.md)"_, vimos que é possível iniciar o serviço do MySQL diretamente pelo binário _[mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)_ ou pelo script _[mysqld_safe](https://dev.mysql.com/doc/refman/8.0/en/mysqld-safe.html)_. Cada modo de inicialização lê as suas configuraçõesas de diferentes _seções_:
+Vimos em _"[Iniciar e parar o serviço do MySQL](/start-and-stop-mysql.md)"_, que é possível iniciar o serviço do MySQL diretamente pelo binário _[mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)_ ou pelo script _[mysqld_safe](https://dev.mysql.com/doc/refman/8.0/en/mysqld-safe.html)_. Cada modo de inicialização lê as suas configuraçõesas de diferentes _seções_:
 
 - Para o binário _[mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)_, as suas configurações são lidas de qualquer uma das seções: _\[mysqld\]_, _\[mysql\_cluster\]_, _\[server\]_ ou _\[mysqld-8.0\]_
 
@@ -85,6 +85,8 @@ transaction-prealloc-size                                    4096
 transaction-read-only                                        FALSE
 ...
 ```
+
+>_**__NOTA:__** É possível utilizar o conjunto de opções --verbose e --help em qualquer comando do MySQL para obter a lista das opções disponíveis._
 
 Estas opções podem ser transportadas para dentro do arquivo de configurações com seu valor modificado, se for o caso:
 
@@ -139,3 +141,52 @@ Será exibido um erro caso o arquivo tenha qualquer opção ou valor inválido:
 ```
 
 >_**__NOTA:__** A opção --validade-config é particularmente útil quando se atualiza a versão do MySQL pois ela dirá, caso uma opção tenha sido removida na versão atualizada._
+
+#### \[client\]
+
+O grupo de opções _\[client\]_ permite especificar as opções que serão aplicadas para todos os programas cliente do MySQL, e não pelo _[mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)_.
+
+```
+[client]
+port=3306
+socket=/tmp/mysql.sock
+
+[mysqld]
+port=3306
+socket=/tmp/mysql.sock
+key_buffer_size=16M
+max_allowed_packet=128M
+
+[mysqldump]
+quick
+```
+
+### Linha de comando
+
+Os programas que fazem parte da instalação do MySQL podem ser configurados através de inumeras opções informadas pela linha de comando. Tais opções são processadas na ordem em que são especificadas. Caso uma mesma opção seja especificada múltiplas vezes, a última ocorrência prevalecerá.
+
+Por exemplo, o comando abaixo faz com que o cliente _[mysql](https://dev.mysql.com/doc/refman/8.0/en/mysql.html)_ se conecte ao _localhost_ e não ao host _db.armbrust.eti.br_:
+
+```
+[root@orl8 mysql]# bin/mysql -u root -p -h db.armbrust.eti.br -h localhost
+```
+
+>_**__NOTA:__** Existe uma exceção a essa regra para o binário [mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html) que irá processar somente a primeira ocorrência da opção --user por questões de segurança._
+
+As opções de linha de comando são _case-sensitive_ e muitas delas, podem ser especificadas usando a sua forma curta, pelo uso de apenas um traço (ex: -h). Ou a forma longa, que utiliza dois traços (ex: --help). Ambas as formas geram o mesmo resultado.
+
+Ao usar uma opção em sua forma longa e que requer um valor, deve-se utilizar o sinal de igual entre a opção e seu valor (ex: --host=localhost). O sinal de igual não é necessário ao utilizar a sua forma curta (ex: -h localhost). 
+
+Uma dica final. Quando se utiliza a opção _-p_ para especificar uma senha, nunca utilize um espaço entre a opção e seu valor:
+
+```
+[root@orl8 mysql]# bin/mysql -u root -h localhost -pSup3rS3cr3t0!
+```
+
+O programa de linha de comando irá interpretar o espaço como parte da senha:
+
+```
+[opc@orl8 mysql]$ bin/mysql -u root -h localhost -p Sup3rS3cr3t0!
+Enter password:
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+```

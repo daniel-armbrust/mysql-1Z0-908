@@ -9,5 +9,5 @@
 3. [Iniciar e parar o serviço do MySQL](/start-and-stop-mysql.md)
 4. Atualizar MySQL
 5. [Configurando o MySQL usando opções e arquivos de opções](/configure-mysql-by-using-options-and-option-files.md)
-6. Configurar variáveis MySQL
+6. [Configurar as variáveis do MySQL](/configure-mysql-variables.md)
 7. Inicie vários servidores MySQL no mesmo host
