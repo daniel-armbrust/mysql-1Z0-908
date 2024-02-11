@@ -1,6 +1,6 @@
-# Instalação e configuração do servidor
+# 1. Instalação e configuração do servidor
 
-## 4. Atualizar para o MySQL 8.0
+## 1.4 - Atualizar para o MySQL 8.0
 
 - Consultar sempre a documentação sobre Upgrade de versão:
     - [Changes in MySQL 8.0](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html)

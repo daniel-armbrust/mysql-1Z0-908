@@ -1,6 +1,6 @@
-# Instalação e configuração do servidor
+# 1. Instalação e configuração do servidor
 
-## 3. Iniciar e parar o serviço do MySQL
+## 1.3 - Iniciar e parar o serviço do MySQL
 
 ### Iniciando e parando o serviço do MySQL
 

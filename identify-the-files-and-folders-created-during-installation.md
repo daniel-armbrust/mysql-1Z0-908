@@ -1,6 +1,6 @@
-# Instalação e configuração do servidor
+# 1. Instalação e configuração do servidor
 
-## 1.2 Identifique os arquivos e diretórios que foram criados durante a instalação
+## 1.2 - Identifique os arquivos e diretórios que foram criados durante a instalação
 
 De acordo com a instalação feita na seção _["Instalar e utilizar o servidor MySQL e programas cliente"](/install-and-use-the-mysql-server-and-client-programs.md)_, todos os arquivos do MySQL estão localizados no diretório _"/usr/local/mysql"_.
 
