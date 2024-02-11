@@ -262,3 +262,98 @@ Query OK, 0 rows affected (0.01 sec)
 mysql>
 ```
 
+### Programas cliente
+
+Nessa seção será documentada a utilização de somente alguns programas clientes que são parte da instalação do MySQL. A documentação oficial do MySQL, documenta os diferentes programas clientes em:
+
+- [Client Programs](https://dev.mysql.com/doc/refman/8.0/en/programs-client.html)
+- [Administrative and Utility Programs](https://dev.mysql.com/doc/refman/8.0/en/programs-admin-utils.html)
+- [Program Development Utilities](https://dev.mysql.com/doc/refman/8.0/en/programs-development.html)
+- [Installation-Related Programs](https://dev.mysql.com/doc/refman/8.0/en/programs-installation.html)
+- [Miscellaneous Programs](https://dev.mysql.com/doc/refman/8.0/en/programs-miscellaneous.html)
+
+#### [mysql_config_editor](https://dev.mysql.com/doc/refman/8.0/en/mysql-config-editor.html)
+
+O utilitário [mysql_config_editor](https://dev.mysql.com/doc/refman/8.0/en/mysql-config-editor.html) possibilita armazenar de forma segura as credênciais de autenticação em um arquivo de nome _.mylogin.cnf_ no diretório home do usuário.
+
+A ideia é que este arquivo seja usado como um meio de autenticação automático ao MySQL.
+
+Para criar um arquivo contendo parâmetros de conexão e as credências de autenticação, execute o comando abaixo:
+
+```
+[darmbrust@orl8 mysql]$ bin/mysql_config_editor set \
+> --login-path=admin \
+> --user=root \
+> --password \
+> --host=127.0.0.1
+Enter password:
+```
+
+Após a execução, será criado o arquivo _.mylogin.cnf_ dentro do diretório home do usuário:
+
+``` 
+[darmbrust@orl8 mysql]$ ls ~/.mylogin.cnf
+/home/darmbrust/.mylogin.cnf
+```
+
+Lembrando que o conteúdo deste arquivo só pode ser lido com o próprio utilitário _[mysql_config_editor](https://dev.mysql.com/doc/refman/8.0/en/mysql-config-editor.html)_:
+
+```
+[darmbrust@orl8 mysql]$ bin/mysql_config_editor print --login-path=admin
+[admin]
+user = "root"
+password = *****
+host = "127.0.0.1"
+```
+
+Para o cliente de linha de comando _[mysql](https://dev.mysql.com/doc/refman/8.0/en/mysql.html)_ utilizar as informações, especifique a opção _--login-path=admin_ conforme mostrado abaixo:
+
+```
+[darmbrust@orl8 mysql]$ bin/mysql --login-path=admin
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 19
+Server version: 8.0.36 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql>
+```
+
+Por padrão, o utilitário _[mysql_config_editor](https://dev.mysql.com/doc/refman/8.0/en/mysql-config-editor.html)_ opera na seção _\[client\]_ caso a opção _--login-path_ não seja especificada. 
+
+O comando abaixo irá acrescentar uma nova entrada no arquivo _~/.mylogin.cnf_ porém, suas opções e valores vão para a seção _\[client\]_:
+
+```
+[darmbrust@orl8 mysql]$ bin/mysql_config_editor set \
+> --host=db.armbrust.eti.br \
+> --user=darmbrust \
+> --password
+Enter password:
+```
+
+Com o comando abaixo é possível visualizar todo o seu conteúdo:
+
+```
+[darmbrust@orl8 mysql]$ bin/mysql_config_editor print --all
+[admin]
+user = "root"
+password = *****
+host = "127.0.0.1"
+[client]
+user = "darmbrust"
+password = *****
+host = "db.armbrust.eti.br"
+```
+
+Para remover uma seção, o comando abxio pode ser usado:
+
+```
+[darmbrust@orl8 mysql]$ bin/mysql_config_editor remove --login-path=admin
+```
+
