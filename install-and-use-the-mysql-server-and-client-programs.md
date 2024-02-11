@@ -264,21 +264,15 @@ mysql>
 
 ### Programas cliente
 
-Nessa seção será documentada a utilização de somente alguns programas clientes que são parte da instalação do MySQL. A documentação oficial do MySQL, documenta os diferentes programas clientes em:
-
-- [Client Programs](https://dev.mysql.com/doc/refman/8.0/en/programs-client.html)
-- [Administrative and Utility Programs](https://dev.mysql.com/doc/refman/8.0/en/programs-admin-utils.html)
-- [Program Development Utilities](https://dev.mysql.com/doc/refman/8.0/en/programs-development.html)
-- [Installation-Related Programs](https://dev.mysql.com/doc/refman/8.0/en/programs-installation.html)
-- [Miscellaneous Programs](https://dev.mysql.com/doc/refman/8.0/en/programs-miscellaneous.html)
+Nessa seção será documentada a utilização de somente alguns programas clientes que são parte da instalação do MySQL.
 
 #### [mysql_config_editor](https://dev.mysql.com/doc/refman/8.0/en/mysql-config-editor.html)
 
-O utilitário [mysql_config_editor](https://dev.mysql.com/doc/refman/8.0/en/mysql-config-editor.html) possibilita armazenar de forma segura as credênciais de autenticação em um arquivo de nome _.mylogin.cnf_ no diretório home do usuário.
+O utilitário _[mysql_config_editor](https://dev.mysql.com/doc/refman/8.0/en/mysql-config-editor.html)_ possibilita armazenar de forma segura as credênciais de autenticação em um arquivo de nome _.mylogin.cnf_ no diretório home do usuário.
 
 A ideia é que este arquivo seja usado como um meio de autenticação automático ao MySQL.
 
-Para criar um arquivo contendo parâmetros de conexão e as credências de autenticação, execute o comando abaixo:
+Para criar um arquivo contendo os parâmetros de conexão junto com as credências de autenticação, execute o comando abaixo:
 
 ```
 [darmbrust@orl8 mysql]$ bin/mysql_config_editor set \
@@ -306,7 +300,7 @@ password = *****
 host = "127.0.0.1"
 ```
 
-Para o cliente de linha de comando _[mysql](https://dev.mysql.com/doc/refman/8.0/en/mysql.html)_ utilizar as informações, especifique a opção _--login-path=admin_ conforme mostrado abaixo:
+Para que o cliente de linha de comando _[mysql](https://dev.mysql.com/doc/refman/8.0/en/mysql.html)_ utilize as informações, especifique a opção _--login-path=admin_ conforme mostrado abaixo:
 
 ```
 [darmbrust@orl8 mysql]$ bin/mysql --login-path=admin
@@ -351,7 +345,7 @@ password = *****
 host = "db.armbrust.eti.br"
 ```
 
-Para remover uma seção, o comando abxio pode ser usado:
+Para remover uma seção, o comando abaixo pode ser usado:
 
 ```
 [darmbrust@orl8 mysql]$ bin/mysql_config_editor remove --login-path=admin

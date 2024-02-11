@@ -19,6 +19,18 @@ myisampack      mysql_config_editor  mysqlimport    mysql_tzinfo_to_sql
 
 >_**__NOTA:__** A documentação oficial sobre o conteúdo dessa seção pode ser acessada por este [link aqui](https://dev.mysql.com/doc/refman/8.0/en/programs-overview.html)._
 
+A documentação oficial do MySQL, documenta os diferentes programas clientes em:
+
+- [Client Programs](https://dev.mysql.com/doc/refman/8.0/en/programs-client.html)
+- [Administrative and Utility Programs](https://dev.mysql.com/doc/refman/8.0/en/programs-admin-utils.html)
+- [Program Development Utilities](https://dev.mysql.com/doc/refman/8.0/en/programs-development.html)
+- [Installation-Related Programs](https://dev.mysql.com/doc/refman/8.0/en/programs-installation.html)
+- [Miscellaneous Programs](https://dev.mysql.com/doc/refman/8.0/en/programs-miscellaneous.html)
+
+Já a documentação do servidor MySQL e programas relacionados a inicialização do servidor, encontram-se em:
+
+- [Server and Server-Startup Programs](https://dev.mysql.com/doc/refman/8.0/en/programs-server.html)
+
 ### Programa principal
 
 - **[mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)**
