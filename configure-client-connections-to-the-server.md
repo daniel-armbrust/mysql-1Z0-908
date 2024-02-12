@@ -16,6 +16,6 @@ Programas clientes instalados localmente no servidor ou, em máquinas remotas da
 
 O **_Storage Layer_** suporta diferentes _storage engines_ como o _[InnoDB](https://pt.wikipedia.org/wiki/InnoDB)_ ou _[MyISAM](https://pt.wikipedia.org/wiki/MyISAM)_, sendo estes os mais utilizados.
 
-Múltiplas instâncias do processo _[mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)_, podem ser executadas dentro de um único sistema operacional sendo que cada instância irá cuidar das suas conexões e gerenciar o seu próprio _[diretório de dados (datadir)](https://dev.mysql.com/doc/refman/8.0/en/data-directory.html)_.
+Múltiplas instâncias do processo _[mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)_, podem ser executadas dentro de um único sistema operacional sendo que cada instância irá cuidar das suas conexões de rede e, gerenciar o seu próprio _[diretório de dados (datadir)](https://dev.mysql.com/doc/refman/8.0/en/data-directory.html)_.
 
 ![alt_text](/imgs/mysql-arch-2.png "Arquitetura - 2")
