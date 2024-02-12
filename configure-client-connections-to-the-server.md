@@ -8,7 +8,7 @@ A arquitetura básica do MySQL é apresentada na figura abaixo:
 
 Independente do sistema operacional onde o MySQL foi instalado, o principal é a execução do processo _[mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)_.
 
-[mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html) é executado como um único processo _([daemon](https://pt.wikipedia.org/wiki/Daemon_(computa%C3%A7%C3%A3o)))_ e que permite gerenciar múltiplas conexões ao mesmo tempo _([multithreaded](https://en.wikipedia.org/wiki/Multithreading_(computer_architecture)))_, além de gerenciar a memória e o acesso aos bancos de dados armazenados em disco.
+[mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html) é executado como um único processo _([daemon](https://pt.wikipedia.org/wiki/Daemon_(computa%C3%A7%C3%A3o)))_ que consegue lidar com múltiplas conexões _([multithreaded](https://en.wikipedia.org/wiki/Multithreading_(computer_architecture)))_, além de ser capaz de gerenciar a sua memória e o acesso aos bancos de dados armazenados em disco.
 
 Programas clientes instalados localmente no servidor ou, em máquinas remotas da rede, se conectam ao processo _[mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)_ passando pela **_Connection Layer_** para manipular os dados.
 
