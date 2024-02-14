@@ -16,7 +16,7 @@
 <br/>
 1.6 - [Configurar as variáveis do MySQL](/configure-mysql-variables.md)
 <br/>
-1.7 - Inicie vários servidores MySQL no mesmo host
+1.7 - [Inicie vários servidores MySQL no mesmo host](/launch-multiple-mysql-servers-on-the-same-host.md)
 
 ### 2. Arquitetura
 
