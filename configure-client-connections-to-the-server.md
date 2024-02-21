@@ -189,7 +189,7 @@ Os certificados e as chaves geradas automaticamente são:
 - public_key
     - Membro público do par de chaves privada/pública.
 
-Todas esses arquivos são gerados no formato _[PEM](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail)_ (formato obrigatório) e as informações de um certificado, podem ser visualizadas através do _OpenSSL_:
+Todas esses arquivos são gerados no formato _[PEM](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail)_ (formato obrigatório) e as informações de um certificado, podem ser visualizadas através do próprio _OpenSSL_:
 
 ```
 [root@orl8 mysql]# openssl x509 -text -in data/server-cert.pem
@@ -256,7 +256,7 @@ mysql> SET PERSIST require_secure_transport = on;
 Query OK, 0 rows affected (0.00 sec)
 ```
 
-Ao tentar se conectar sem usar criptografia através da opção _[ssl-mode](https://dev.mysql.com/doc/refman/8.0/en/connection-options.html#option_general_ssl-mode)_, resulta em um erro:
+Ao tentar se conectar sem usar criptografia, através da opção _[ssl-mode](https://dev.mysql.com/doc/refman/8.0/en/connection-options.html#option_general_ssl-mode)_, irá resultar em um erro:
 
 ```
 [root@orl8 mysql]# bin/mysql --ssl-mode=DISABLED
@@ -289,25 +289,48 @@ TCP port:               3306
 Binary data as:         Hexadecimal
 ```
 
-Com SSL:
+Conexões que utilizam criptografia com o servidor:
 
 ```
 SSL: Cipher in use is TLS_AES_256_GCM_SHA384
 ```
 
-Sem SSL:
+Sem criptografia:
 
 ```
 SSL: Not in use
 ```
 
-Para configurar uma conta MySQL e forçar o uso da criptografia nas conexões, inclua uma cláusula _REQUIRE_ na instrução _[CREATE USER](https://dev.mysql.com/doc/refman/8.0/en/create-user.html)_:
+Para configurar uma conta MySQL e forçar o uso da criptografia nas conexões, inclua uma cláusula _REQUIRE_ na instrução _[CREATE USER](https://dev.mysql.com/doc/refman/8.0/en/create-user.html)_ conforme mostrado abaixo:
 
 ```
 mysql> CREATE USER 'darmbrust'@'localhost' REQUIRE X509;
 Query OK, 0 rows affected (0.01 sec)
 ```
 
-### Acesso do Administrador
+### Acesso Administrativo
+
+O servidor MySQL suporta uma única conexão administrativa além do limite definido pela opção _[max\_connections](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_max_connections)_. 
+
+A ideia é permitir que um usuário no qual tenha o privilégio _[CONNECTION_ADMIN](https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_connection-admin)_, possa acessar o servidor em momentos de _alta utilização_ e realizar qualquer tarefa administrativa.
+
+>_**__NOTA:__** Não há limite para o número de conexões administrativas, mas as conexões só são permitidas apenas para usuários que possuem o privilégio [SERVICE\_CONNECTION\_ADMIN](https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_service-connection-admin)._
+
+A partir da versão 8.0.14 do MySQL, é possível especificar uma _thread_ exclusiva _([create_admin_listener_thread](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_create_admin_listener_thread))_, um endereço IP _([admin_address](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_admin_address))_ e porta _([admin_port](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_admin_port))_ para o acesso administrativo:
+
+```
+[root@orl8 mysql]# cat /etc/mysql/my.cnf
+[mysqld]
+create_admin_listener_thread = on
+admin_address = 127.0.0.1
+admin_port = 33064
+```
+
+A conexão pode ser feita especificando a porta pelo cliente _[mysql](https://dev.mysql.com/doc/refman/8.0/en/mysql.html)_: 
+
+```
+[root@orl8 mysql]# bin/mysql --port=33064 --user=root -p
+```
+
 
 ### IPv6
