@@ -126,3 +126,188 @@ A conexão ao servidor através do _[Unix Domain Socket](https://pt.wikipedia.or
 ```
 [root@orl8 mysql]# bin/mysql -S /tmp/mysql.sock -u root -p
 ```
+
+### Conexões Criptografadas via TLS
+
+Para conexões através do protocolo TCP/IP, a _Connection Layer_ pode ser configurada para aceitar criptografia usando o protocolo _[TLS (Transport Layer Security)](https://pt.wikipedia.org/wiki/Transport_Layer_Security)_. 
+
+O _TLS_ usa algoritmos de criptografia para garantir que os dados recebidos por uma rede pública sejam confiáveis. Ele possui mecanismos para detectar alteração, perda, reprodução falsa dos dados _[(replay attack)](https://en.wikipedia.org/wiki/Replay_attack)_ e também, incorpora algoritmos que fornecem verificação de identidade usando o padrão _[X.509](https://en.wikipedia.org/wiki/X.509)_.
+
+>_**__NOTA:__** O protocolo TLS (Transport Layer Security) é o sucessor do antigo protocolo SSL (Secure Sockets Layer). O MySQL não utiliza o protocolo SSL pois a sua criptografia é fraca._
+
+A funcionalidade de criptografia é fornecido pela biblioteca _[OpenSSL](https://www.openssl.org/)_ e o comando abaixo, verifica se a instalação do MySQL possui tal suporte (disponível a partir do MySQL 8.0.30):
+
+```
+mysql> SHOW STATUS WHERE variable_name = 'Tls_library_version';
++---------------------+----------------------------+
+| Variable_name       | Value                      |
++---------------------+----------------------------+
+| Tls_library_version | OpenSSL 3.0.12 24 Oct 2023 |
++---------------------+----------------------------+
+1 row in set (0.00 sec)
+```
+
+Um servidor MySQL com suporte ao _OpenSSL_ irá automaticamente gerar um conjunto de chaves e certificados no _[diretório de dados (datadir)](https://dev.mysql.com/doc/refman/8.0/en/data-directory.html)_ na inicialização do _[mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)_:
+
+```
+[root@orl8 mysql]# ls -1 data/*.pem
+data/ca-key.pem
+data/ca.pem
+data/client-cert.pem
+data/client-key.pem
+data/private_key.pem
+data/public_key.pem
+data/server-cert.pem
+data/server-key.pem
+```
+
+A variável de sistema _[auto_generate_certs](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_auto_generate_certs)_ controla a geração automática dessas chaves e certificados.
+
+Os certificados e as chaves geradas automaticamente são:
+
+- ca.pem
+    - Certificado da CA auto-assinado.
+
+- ca-key.pem
+    - Chave privada da CA.
+
+- server-cert.pem
+    - Certificado do servidor MySQL.
+
+- server-key.pem
+    - Chave privada do servidor MySQL.
+
+- client-cert.pem 
+    - Certificado dos clientes MySQL.
+
+- client-key.pem 
+    - Chave privada dos clientes MySQL.
+
+- private_key.pem 
+    - Membro privado do par de chaves privada/pública.
+
+- public_key
+    - Membro público do par de chaves privada/pública.
+
+Todas esses arquivos são gerados no formato _[PEM](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail)_ (formato obrigatório) e as informações de um certificado, podem ser visualizadas através do _OpenSSL_:
+
+```
+[root@orl8 mysql]# openssl x509 -text -in data/server-cert.pem
+```
+
+Ao utilizar certificados digitais, é importante checar a sua data de expiração:
+
+```
+mysql> SHOW STATUS LIKE 'Ssl_server_not%';
++-----------------------+--------------------------+
+| Variable_name         | Value                    |
++-----------------------+--------------------------+
+| Ssl_server_not_after  | Feb 17 12:26:31 2034 GMT |
+| Ssl_server_not_before | Feb 20 12:26:31 2024 GMT |
++-----------------------+--------------------------+
+2 rows in set (0.03 sec)
+```
+
+O utilitário de linha de comando _[mysql_ssl_rsa_setup](https://dev.mysql.com/doc/refman/8.0/en/mysql-ssl-rsa-setup.html)_ utiliza o _OpenSSL_ para criar novas chaves e certificados caso os antigos tenham sido expirados:
+
+```
+[root@orl8 mysql]# bin/mysql_ssl_rsa_setup --datadir=data/
+WARNING: mysql_ssl_rsa_setup is deprecated and will be removed in a future version. Use the mysqld server instead.
+Ignoring -days; not generating a certificate
+Generating a RSA private key
+......+++++
+...................................+++++
+writing new private key to 'ca-key.pem'
+-----
+Ignoring -days; not generating a certificate
+Generating a RSA private key
+..................+++++
+...+++++
+writing new private key to 'server-key.pem'
+-----
+Ignoring -days; not generating a certificate
+Generating a RSA private key
+.............+++++
+..........................+++++
+writing new private key to 'client-key.pem'
+-----
+```
+
+Através da variável de sistema _[require_secure_transport](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_require_secure_transport)_, é possível exigir somente conexões criptografadas ao servidor MySQL:
+
+```
+[root@orl8 mysql]# cat /etc/mysql/my.cnf
+[mysqld]
+require_secure_transport = on
+ssl_ca = /usr/local/mysql/data/ca.pem
+ssl_cert = /usr/local/mysql/data/server-cert.pem
+ssl_key = /usr/local/mysql/data/server-key.pem
+
+[mysql]
+ssl_ca = /usr/local/mysql/data/ca.pem
+ssl_cert = /usr/local/mysql/data/client-cert.pem
+ssl_key = /usr/local/mysql/data/client-key.pem
+```
+
+Ou, diretamente através do _[mysql](https://dev.mysql.com/doc/refman/8.0/en/mysql.html)_:
+
+```
+mysql> SET PERSIST require_secure_transport = on;
+Query OK, 0 rows affected (0.00 sec)
+```
+
+Ao tentar se conectar sem usar criptografia através da opção _[ssl-mode](https://dev.mysql.com/doc/refman/8.0/en/connection-options.html#option_general_ssl-mode)_, resulta em um erro:
+
+```
+[root@orl8 mysql]# bin/mysql --ssl-mode=DISABLED
+WARNING: no verification of server certificate will be done. Use --ssl-mode=VERIFY_CA or VERIFY_IDENTITY.
+ERROR 3159 (HY000): Connections using insecure transport are prohibited while --require_secure_transport=ON.
+```
+
+Uma vez conectado, o uso ou não do _SSL_ pode ser verificado através do comando _SESSION_ ou _\s_:
+
+```
+mysql> \s
+--------------
+bin/mysql  Ver 8.0.36 for Linux on x86_64 (MySQL Community Server - GPL)
+
+Connection id:          11
+Current database:
+Current user:           root@localhost
+SSL:                    Cipher in use is TLS_AES_256_GCM_SHA384
+Current pager:          stdout
+Using outfile:          ''
+Using delimiter:        ;
+Server version:         8.0.36 MySQL Community Server - GPL
+Protocol version:       10
+Connection:             127.0.0.1 via TCP/IP
+Server characterset:    utf8mb4
+Db     characterset:    utf8mb4
+Client characterset:    utf8mb4
+Conn.  characterset:    utf8mb4
+TCP port:               3306
+Binary data as:         Hexadecimal
+```
+
+Com SSL:
+
+```
+SSL: Cipher in use is TLS_AES_256_GCM_SHA384
+```
+
+Sem SSL:
+
+```
+SSL: Not in use
+```
+
+Para configurar uma conta MySQL e forçar o uso da criptografia nas conexões, inclua uma cláusula _REQUIRE_ na instrução _[CREATE USER](https://dev.mysql.com/doc/refman/8.0/en/create-user.html)_:
+
+```
+mysql> CREATE USER 'darmbrust'@'localhost' REQUIRE X509;
+Query OK, 0 rows affected (0.01 sec)
+```
+
+### Acesso do Administrador
+
+### IPv6
