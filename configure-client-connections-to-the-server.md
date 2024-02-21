@@ -326,11 +326,23 @@ admin_address = 127.0.0.1
 admin_port = 33064
 ```
 
-A conexão pode ser feita especificando a porta pelo cliente _[mysql](https://dev.mysql.com/doc/refman/8.0/en/mysql.html)_: 
+A conexão pode ser feita especificando a porta administrativa pelo cliente _[mysql](https://dev.mysql.com/doc/refman/8.0/en/mysql.html)_: 
 
 ```
 [root@orl8 mysql]# bin/mysql --port=33064 --user=root -p
 ```
 
+Para utilizar criptografia nas conexões administrativas, as opções _[admin-ssl](https://dev.mysql.com/doc/refman/8.0/en/server-options.html#option_mysqld_admin-ssl)_, [admin_ssl_ca](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_admin_ssl_ca), [admin_ssl_cert](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_admin_ssl_cert) e _[admin_ssl_key](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_admin_ssl_key)_ podem ser usadas:
+
+```
+[root@orl8 mysql]# cat /etc/mysql/my.cnf
+[mysqld]
+admin_address = 127.0.0.1
+admin_port = 33064
+admin-ssl = on
+admin_ssl_ca = /usr/local/mysql/data/ca.pem
+admin_ssl_cert = /usr/local/mysql/data/server-cert.pem
+admin_ssl_key = /usr/local/mysql/data/server-key.pem
+```
 
 ### IPv6
