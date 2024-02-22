@@ -8,9 +8,9 @@ Aqui será apresentado uma visão geral de como o MySQL gerencia as conexões do
 
 Os clientes podem se conectar ao servidor MySQL através da rede, utilizando o protocolo _TCP/IP_ ou, via _[Unix Domain Socket](https://pt.wikipedia.org/wiki/Soquete_de_dom%C3%ADnio_Unix)_ que é um arquivo especial no sistema operacional Linux que possibilita a comunicação de dois processos dentro do mesmo host (cliente e servidor MySQL).
 
-As conexões dos clientes ao servidor são gerenciadas pela _Connection Layer_. Basicamente, o _Connection Manager_ associa a cada cliente uma _[thread](https://pt.wikipedia.org/wiki/Thread_(computa%C3%A7%C3%A3o))_ de conexão dedicada que irá cuidar da autenticação e processar as suas requisições.
+As conexões dos clientes ao servidor são gerenciadas pela _Connection Layer_. Basicamente, a _Connection Layer_ associa a cada cliente de forma dedicada uma _[thread](https://pt.wikipedia.org/wiki/Thread_(computa%C3%A7%C3%A3o))_ de conexão que irá cuidar da autenticação do usuário e processar as suas requisições.
 
-A quantidade máxima de conexões clientes simultâneas permitidas pelo servidor, é controlada pela variável de sistema _[max\_connections](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_max_connections)_. Se o servidor recusar uma conexão porque o limite _max\_connections_ foi atingido, a variável de status _[Connection\_errors\_max\_connections](https://dev.mysql.com/doc/refman/8.0/en/server-status-variables.html#statvar_Connection_errors_max_connections)_ será incrementada para cada conexão recusada.
+A quantidade máxima de conexões clientes simultâneas permitidas pelo servidor é controlada pela variável de sistema _[max\_connections](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_max_connections)_. Se o servidor recusar uma conexão porque o limite _max\_connections_ foi atingido, a variável de status _[Connection\_errors\_max\_connections](https://dev.mysql.com/doc/refman/8.0/en/server-status-variables.html#statvar_Connection_errors_max_connections)_ será incrementada para cada conexão recusada.
 
 ```
 mysql> SHOW STATUS WHERE variable_name = 'Connection_errors_max_connections';
@@ -22,13 +22,13 @@ mysql> SHOW STATUS WHERE variable_name = 'Connection_errors_max_connections';
 1 row in set (0.00 sec)
 ```
 
-Independente da forma de conexão do cliente ao servidor, via protocolo _TCP/IP_ ou _Unix Domain Socket_, a _Connection Layer_ sempre irá disponibilizar uma _thread_ para tratar a conexão do cliente. Lembrando que, a atividade de criar novas _threads_ é uma operação custosa em termos computacionais.
+Independente da forma de conexão do cliente ao servidor, via protocolo _TCP/IP_ ou _Unix Domain Socket_, a _Connection Layer_ sempre disponibiliza uma _thread_ para tratar a conexão do cliente. Lembrando que, a atividade de criar novas _threads_ é uma operação custosa em termos computacionais.
 
-Para aumentar o desempenho, o MySQL trabalha internamente com uma memória _[cache](https://pt.wikipedia.org/wiki/Cache)_ com o propósito de armazenar algumas _threads_ de conexão.
+Para aumentar o desempenho, o MySQL trabalha internamente com uma memória _[cache](https://pt.wikipedia.org/wiki/Cache)_ que possui o propósito de armazenar algumas _threads_ de conexão.
 
-Quando um cliente encerra a sua conexão, o próprio MySQL guarda aquela _thread_ no **_thread cache_** para que essa seja reutilizada por um novo cliente no futuro. O papel do _thread cache_ é armazenar _threads de conexão_ para que essas sejam reutilizadas por outros novos clientes, evitando quando possível a criação de novas _threads_.
+Quando um cliente encerra a sua conexão, o próprio MySQL guarda aquela _thread_ no **_thread cache_** para que essa seja reutilizada por um novo cliente no futuro. O papel do _thread cache_ é armazenar _threads de conexão_ para que essas sejam reutilizadas por outros clientes, evitando quando possível a criação de novas _threads_.
 
-A variável de sistema _[thread_cache_size](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_thread_cache_size)_ controla a quantidade de _threads_ que ficam armazenadas em _cache_ para reutilização futura. Por padrão, o seu valor é automaticamente calculado na inicialização do MySQL. Um valor igual a 0, desabilita completamente o _cache_ e faz com que a _Connection Layer_ sempre crie uma nova _thread_ para atender um cliente.
+A variável de sistema _[thread_cache_size](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_thread_cache_size)_ controla a quantidade de _threads_ que ficam armazenadas em _cache_ para reutilização futura. Por padrão, o seu valor é automaticamente calculado na inicialização do MySQL. Um valor igual a 0, desabilita completamente o _cache_ e faz com que a _Connection Layer_ sempre crie uma nova _thread_ para atender um novo cliente.
 
 >_**__NOTA:__** Lembre-se de que novas threads de conexão são sempre criadas até o limite especificado por "max\_connections". A ideia do "thread cache" é reutilizar threads, evitando quando possível a criação de novas threads de conexão._
 
@@ -38,7 +38,7 @@ Toda _thread_ consome memória do servidor. Por isso, ter muitas _threads_ em _c
 
 A variável de ambiente _[thread_stack](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_thread_stack)_ controla o _[tamanho da pilha em memória (stack size)](https://en.wikipedia.org/wiki/Stack-based_memory_allocation)_ usada por uma _thread_. Ajustar essa variável para um valor muito pequeno, irá limitar a complexidade das instruções SQL que o servidor pode tratar. O valor padrão é adequado na maioria dos casos.
 
-O comando abaixo monitoram as _threads_ gerenciadas pelo servidor MySQL:
+O comando abaixo monitoram as _threads_ do servidor MySQL:
 
 ```
 mysql> SHOW STATUS WHERE variable_name LIKE 'Threads%';
@@ -110,7 +110,7 @@ Conforme já explicado, o _[Unix Domain Socket](https://pt.wikipedia.org/wiki/So
 
 Uma comunicação que utiliza _[Unix Domain Socket](https://pt.wikipedia.org/wiki/Soquete_de_dom%C3%ADnio_Unix)_ é mais performática em comparação a uma comunicação através do protocolo _TCP/IP_. Porém, essa comunicação só é possível entre cliente e servidor dentro do mesmo sistema operacional.
 
->_**__NOTA:__** Consulte este [link](https://lists.freebsd.org/pipermail/freebsd-performance/2005-February/001143.html) para uma comparação entre ["unix domain sockets vs.internet sockets"](https://lists.freebsd.org/pipermail/freebsd-performance/2005-February/001143.html)._
+>_**__NOTA:__** Consulte este [link](https://lists.freebsd.org/pipermail/freebsd-performance/2005-February/001143.html) para uma comparação entre ["unix domain sockets vs. internet sockets"](https://lists.freebsd.org/pipermail/freebsd-performance/2005-February/001143.html)._
 
 As opções _[socket](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_socket)_ e _[mysqlx_socket](https://dev.mysql.com/doc/refman/8.0/en/x-plugin-options-system-variables.html#sysvar_mysqlx_socket)_, controlam a criação do arquivo no sistema operacional Linux para o _[Classic Protocol](https://dev.mysql.com/doc/dev/mysql-server/latest/PAGE_PROTOCOL.html)_ e _[X Protocol](https://dev.mysql.com/doc/dev/mysql-server/latest/page_mysqlx_protocol.html)_ respectivamente:
 
@@ -147,7 +147,7 @@ mysql> SHOW STATUS WHERE variable_name = 'Tls_library_version';
 1 row in set (0.00 sec)
 ```
 
-Um servidor MySQL com suporte ao _OpenSSL_ irá automaticamente gerar um conjunto de chaves e certificados no _[diretório de dados (datadir)](https://dev.mysql.com/doc/refman/8.0/en/data-directory.html)_ na inicialização do _[mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)_:
+Por padrão, o servidor MySQL com suporte ao _OpenSSL_ irá automaticamente gerar um conjunto de chaves e certificados no _[diretório de dados (datadir)](https://dev.mysql.com/doc/refman/8.0/en/data-directory.html)_ na inicialização do _[mysqld](https://dev.mysql.com/doc/refman/8.0/en/mysqld.html)_:
 
 ```
 [root@orl8 mysql]# ls -1 data/*.pem
@@ -189,7 +189,7 @@ Os certificados e as chaves geradas automaticamente são:
 - public_key
     - Membro público do par de chaves privada/pública.
 
-Todas esses arquivos são gerados no formato _[PEM](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail)_ (formato obrigatório) e as informações de um certificado, podem ser visualizadas através do próprio _OpenSSL_:
+Todos esses arquivos são gerados no formato _[PEM](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail)_ (formato obrigatório) e as informações de um certificado, podem ser visualizadas através do próprio _OpenSSL_:
 
 ```
 [root@orl8 mysql]# openssl x509 -text -in data/server-cert.pem
@@ -310,7 +310,7 @@ Query OK, 0 rows affected (0.01 sec)
 
 ### Acesso Administrativo
 
-O servidor MySQL suporta uma única conexão administrativa além do limite definido pela opção _[max\_connections](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_max_connections)_. 
+O servidor MySQL suporta uma única conexão administrativa além dos limites definidos pela opção _[max\_connections](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_max_connections)_. 
 
 A ideia é permitir que um usuário no qual tenha o privilégio _[CONNECTION_ADMIN](https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_connection-admin)_, possa acessar o servidor em momentos de _alta utilização_ e realizar qualquer tarefa administrativa.
 
