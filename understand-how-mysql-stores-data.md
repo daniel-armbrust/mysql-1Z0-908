@@ -14,9 +14,9 @@ Aqui será apresentado uma visão geral de como o MySQL executa as instruções 
 
 Depois de estabelecer a conexão e se autenticar com sucesso, a primeira etapa dentro do _SQL Layer_ consiste em analisar a sintaxe da _[instrução SQL](https://dev.mysql.com/doc/refman/8.0/en/sql-statements.html)_ recebida. Se a instrução estiver correta, o servidor verifica se o usuário conectado possui a devida _autorização_ para recuperar e/ou manipular os objetos no qual a instrução faz referência.
 
-Logo após, o servidor aplica diversas _[otimizações](https://dev.mysql.com/doc/refman/8.0/en/optimization.html)_ antes da sua execução. A função do _otimizador_ é criar um _[plano de execução](https://dev.mysql.com/doc/refman/8.0/en/execution-plan-information.html)_ o mais eficiente possível, que envolve a escolha de quais _[índices](https://dev.mysql.com/doc/refman/8.0/en/create-index.html)_ utilizar e, qual a ordem de processamento das tabelas. É possível especificar _"[hints](https://dev.mysql.com/doc/refman/8.0/en/optimizer-hints.html)"_ através de palavras-chaves especiais como forma de alterar o seu processo de decisão.
+Logo após, o servidor aplica diversas _[otimizações](https://dev.mysql.com/doc/refman/8.0/en/optimization.html)_ antes da sua execução. A função do _otimizador_ é criar um _[plano de execução](https://dev.mysql.com/doc/refman/8.0/en/execution-plan-information.html)_ o mais eficiente possível, que basicamente envolve a escolha de quais _[índices](https://dev.mysql.com/doc/refman/8.0/en/create-index.html)_ utilizar e, qual a ordem de processamento das tabelas. É possível especificar _"[hints](https://dev.mysql.com/doc/refman/8.0/en/optimizer-hints.html)"_ através de palavras-chaves especiais como forma de alterar o seu processo de decisão.
 
-Depois de concluír as otimizações, a _instrução SQL_ é enfim executada. Opcionalmente é possível registrar em log o que o servidor MySQL recebeu ou executou dos seus clientes.
+Depois de concluír as otimizações, a _instrução SQL_ é enfim executada. Opcionalmente é possível registrar em log o que o servidor MySQL recebeu ou executou, dos seus clientes.
 
 ![alt_text](/imgs/mysql-arch-3.png "Arquitetura - 3")
 
