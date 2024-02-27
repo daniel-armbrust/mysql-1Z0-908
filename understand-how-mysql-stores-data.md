@@ -28,8 +28,6 @@ Depois de concluír as otimizações, a _instrução SQL_ é enfim executada. Op
 
 Depois do processamento feito pela _SQL Layer_, o próximo passo é acessar os dados que estão no disco. Esse processo é feito pela _Storage Layer_ e seu componente principal chamado _[Storage Engine](https://dev.mysql.com/doc/refman/8.0/en/storage-engines.html)_.
 
-_Storage Engine_ é o componente que 
-
 _Storage Engine_ é o componente que trata das operações SQL para diferentes tipos de tabelas. Ele é o software que processa como os dados são armazenados e recuperados da camada de storage.
 
 Há diferentes tipos de _Storage Engine_ disponíveis para utilização sendo o _[InnoDB](https://dev.mysql.com/doc/refman/8.0/en/innodb-storage-engine.html)_ o padrão e o recomendado a ser utilizado na maioria dos casos.
