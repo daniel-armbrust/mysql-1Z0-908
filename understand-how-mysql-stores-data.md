@@ -88,3 +88,13 @@ Alguns dos _storage engines_ mais utilizados desde o surgimento do MySQL, são:
     - Banco de dados clusterizado é especialmente adequado para aplicativos que exigem o maior grau possível de disponibilidade.
     - Disponível nas distribuições _[MySQL NDB Cluster 8](https://dev.mysql.com/doc/refman/8.0/en/mysql-cluster.html)_.
 
+É possível utilizar diferentes _storage engines_ em diferentes tabelas dentro de um mesmo _[schema](https://pt.wikipedia.org/wiki/Esquema_de_banco_de_dados)_. A palavra-chave _ENGINE_ da instrução _[CREATE TABLE](https://dev.mysql.com/doc/refman/8.0/en/create-table.html)_, permite especificar o tipo de _storage engine_ que será usado por uma tabela:
+
+```
+mysql> CREATE TABLE usuarios (
+    -> id INTEGER NOT NULL,
+    -> nome VARCHAR(100) NOT NULL,
+    -> cidade VARCHAR(50) NOT NULL
+    -> ) ENGINE=CSV;
+Query OK, 0 rows affected (0.01 sec)
+```
