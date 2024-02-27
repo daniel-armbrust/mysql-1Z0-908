@@ -2,6 +2,8 @@
 
 ## Tópicos do Exame
 
+### 0. Introdução ao MySQL
+
 ### 1. Instalação e configuração do servidor
 
 1.1 - [Instalar e utilizar o servidor MySQL e programas cliente](/install-and-use-the-mysql-server-and-client-programs.md)
