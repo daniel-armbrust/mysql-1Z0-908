@@ -26,9 +26,9 @@
 <br/>
 2.2 - [Configurar conexões cliente ao servidor](/configure-client-connections-to-the-server.md)
 <br/>
-2.3 - [Entender como o MySQL armazena os dados](/understand-how-mysql-stores-data.md)
+2.3 - [Entender como o MySQL armazenam os dados](/understand-how-mysql-stores-data.md)
 <br/>
-2.4 - [Entender como o InnoDB armazena os dados e logs](/understand-how-innodb-stores-data-and-logs.md)
+2.4 - [Entender como o InnoDB armazenam os dados e logs](/understand-how-innodb-stores-data-and-logs.md)
 <br/>
 2.5 - [Configurar buffers e caches](/configure-buffers-and-caches.md)
 <br/>
